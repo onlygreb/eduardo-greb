@@ -1,36 +1,57 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Eduardo Greb’s Portfolio
 
-## Getting Started
+A personal portfolio built with [Next.js](https://nextjs.org) and [Tailwind CSS](https://tailwindcss.com), showcasing my professional experience, skills, and projects in a clean, responsive design.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🔍 Overview
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Framework:** Next.js (App Router)  
+- **Styling:** Tailwind CSS with custom utilities  
+- **Fonts:** Geist via `next/font`  
+- **Structure:** Modular components for navigation, hero, experience timeline, highlights, skills, projects, and contact sections.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+This site is designed to be fully responsive, performant, and easy to customize.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 🚀 Features
 
-To learn more about Next.js, take a look at the following resources:
+- **Hero Section** introducing yourself with smooth scroll to experience.  
+- **Professional Experience** displayed in interactive cards with durations calculated automatically.  
+- **Highlights & Specialties** bullet list demonstrating core strengths.  
+- **Skills** organized into categories with clean typography.  
+- **Projects** & **Personal Projects** with unified card design, hover effects, and external links.  
+- **Contact** section with email, GitHub, and LinkedIn links.  
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🛠️ Getting Started
 
-## Deploy on Vercel
+### Prerequisites
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Node.js v16 or higher  
+- npm / Yarn / pnpm / Bun
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/onlygreb/eduardo-greb.git
+   cd eduardo-greb```
+
+2. **Install dependencies**
+    ```bash
+    npm install
+    # or yarn install
+    # or pnpm install
+    # or bun install```
+
+3. **Start the development server**
+    ```bash
+    npm run dev
+    # or yarn dev
+    # or pnpm dev
+    # or bun dev```
+
+4. Open http://localhost:3000 in your browser.

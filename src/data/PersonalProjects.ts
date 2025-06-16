@@ -29,6 +29,6 @@ export const personalProjects: Project[] = [
   {
     title: "Eduardo Greb’s Portfolio",
     desc: "Next.js & Tailwind CSS portfolio site showcasing my projects and skills, with smooth-scroll navigation and a responsive, modern layout.",
-    url: "#",
+    url: "https://github.com/onlygreb/eduardo-greb",
   },
 ];

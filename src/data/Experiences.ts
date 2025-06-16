@@ -113,6 +113,7 @@ export const experiences: Experience[] = [
       TechsAndToolsEnum.SQL,
       TechsAndToolsEnum.Java,
       TechsAndToolsEnum.Spring,
+      TechsAndToolsEnum.Python
     ],
   },
   {

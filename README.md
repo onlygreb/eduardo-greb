@@ -38,20 +38,20 @@ This site is designed to be fully responsive, performant, and easy to customize.
 1. **Clone the repository**
    ```bash
    git clone https://github.com/onlygreb/eduardo-greb.git
-   cd eduardo-greb```
+   cd eduardo-greb
 
 2. **Install dependencies**
     ```bash
     npm install
     # or yarn install
     # or pnpm install
-    # or bun install```
+    # or bun install
 
 3. **Start the development server**
     ```bash
     npm run dev
     # or yarn dev
     # or pnpm dev
-    # or bun dev```
+    # or bun dev
 
 4. Open http://localhost:3000 in your browser.

@@ -6,6 +6,8 @@ import Highlights from "@/components/Highlights";
 import Skills from "@/components/Skills";
 import Projects from "@/components/Projects";
 import Contact from "@/components/Contact";
+import Reveal from "@/components/Reveal";
+import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
@@ -29,7 +31,9 @@ export default function Home() {
           space-y-24 md:space-y-32
         "
       >
-        <HeroSection />
+        <Reveal>
+          <HeroSection />
+        </Reveal>
 
         <section
           id="experience"
@@ -39,15 +43,19 @@ export default function Home() {
             py-8 md:py-12
           "
         >
-          <div className="mb-6 md:mb-8">
-            <p className="text-xs md:text-sm uppercase text-gray-400 tracking-widest">
-              What I’ve done
-            </p>
-            <h2 className="text-2xl md:text-3xl font-bold">
-              Professional Experience
-            </h2>
-          </div>
-          <ExperienceTimeline />
+          <Reveal>
+            <div className="mb-6 md:mb-8">
+              <p className="text-xs md:text-sm uppercase text-gray-400 tracking-widest">
+                What I’ve done
+              </p>
+              <h2 className="text-2xl md:text-3xl font-bold">
+                Professional Experience
+              </h2>
+            </div>
+          </Reveal>
+          <Reveal>
+            <ExperienceTimeline />
+          </Reveal>
         </section>
 
         <section
@@ -58,15 +66,19 @@ export default function Home() {
             py-8 md:py-12
           "
         >
-          <div className="mb-6 md:mb-8">
-            <p className="text-xs md:text-sm uppercase text-gray-400 tracking-widest">
-              My expertise
-            </p>
-            <h2 className="text-2xl md:text-3xl font-bold">
-              Highlights & Specialties
-            </h2>
-          </div>
-          <Highlights />
+          <Reveal>
+            <div className="mb-6 md:mb-8">
+              <p className="text-xs md:text-sm uppercase text-gray-400 tracking-widest">
+                My expertise
+              </p>
+              <h2 className="text-2xl md:text-3xl font-bold">
+                Highlights & Specialties
+              </h2>
+            </div>
+          </Reveal>
+          <Reveal>
+            <Highlights />
+          </Reveal>
         </section>
 
         <section
@@ -77,13 +89,17 @@ export default function Home() {
             py-8 md:py-12
           "
         >
-          <div className="mb-6 md:mb-8">
-            <p className="text-xs md:text-sm uppercase text-gray-400 tracking-widest">
-              What I’m good at
-            </p>
-            <h2 className="text-2xl md:text-3xl font-bold">Skills</h2>
-          </div>
-          <Skills />
+          <Reveal>
+            <div className="mb-6 md:mb-8">
+              <p className="text-xs md:text-sm uppercase text-gray-400 tracking-widest">
+                What I’m good at
+              </p>
+              <h2 className="text-2xl md:text-3xl font-bold">Skills</h2>
+            </div>
+          </Reveal>
+          <Reveal>
+            <Skills />
+          </Reveal>
         </section>
 
         <section
@@ -94,12 +110,14 @@ export default function Home() {
             py-8 md:py-12
           "
         >
-          <div className="mb-6 md:mb-8">
-            <p className="text-xs md:text-sm uppercase text-gray-400 tracking-widest">
-              Some things I’ve built
-            </p>
-            <h2 className="text-2xl md:text-3xl font-bold">Projects</h2>
-          </div>
+          <Reveal>
+            <div className="mb-6 md:mb-8">
+              <p className="text-xs md:text-sm uppercase text-gray-400 tracking-widest">
+                Some things I’ve built
+              </p>
+              <h2 className="text-2xl md:text-3xl font-bold">Projects</h2>
+            </div>
+          </Reveal>
           <Projects itemsKey="projects" />
         </section>
 
@@ -111,34 +129,20 @@ export default function Home() {
             py-8 md:py-12
           "
         >
-          <div className="mb-6 md:mb-8">
-            <p className="text-xs md:text-sm uppercase text-gray-400 tracking-widest">
-              Side projects
-            </p>
-            <h2 className="text-2xl md:text-3xl font-bold">
-              Personal Projects
-            </h2>
-          </div>
+          <Reveal>
+            <div className="mb-6 md:mb-8">
+              <p className="text-xs md:text-sm uppercase text-gray-400 tracking-widest">
+                Side projects
+              </p>
+              <h2 className="text-2xl md:text-3xl font-bold">
+                Personal Projects
+              </h2>
+            </div>
+          </Reveal>
           <Projects itemsKey="personalProjects" />
         </section>
-
-        <section
-          id="contact"
-          className="
-            container mx-auto
-            px-4 md:px-0
-            py-8 md:py-12
-          "
-        >
-          <div className="mb-6 md:mb-8">
-            <p className="text-xs md:text-sm uppercase text-gray-400 tracking-widest">
-              Get in touch
-            </p>
-            <h2 className="text-2xl md:text-3xl font-bold">Contact</h2>
-          </div>
-          <Contact />
-        </section>
       </main>
+      <Footer />
     </>
   );
 }

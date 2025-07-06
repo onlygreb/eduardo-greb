@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Eduardo the Dev-loper's Quest</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "VT323", monospace;
+        background-color: #1a202c;
+        color: #a0aec0;
+      }
+      .font-press-start {
+        font-family: "Press Start 2P", cursive;
+      }
+      .health-bar-inner,
+      .energy-bar-inner {
+        transition: width 0.5s ease-in-out;
+      }
+      .action-button {
+        transition: all 0.1s ease;
+      }
+      .action-button:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+      }
+      .action-button:active:not(:disabled) {
+        transform: translateY(0px);
+      }
+      .action-button:disabled {
+        filter: grayscale(80%);
+        cursor: not-allowed;
+      }
+      #battleLog {
+        height: 120px;
+        overflow-y: scroll;
+        border: 2px solid #4a5568;
+        padding: 8px;
+        background-color: rgba(0, 0, 0, 0.3);
+        scroll-behavior: smooth;
+      }
+      #mapView {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
+        gap: 10px;
+        background-color: #1a202c;
+        border: 4px solid #4a5568;
+        height: 600px;
+        position: relative;
+      }
+      .room {
+        background-color: #2d3748;
+        border: 2px solid #4a5568;
+        position: relative;
+      }
+      #player {
+        position: absolute;
+        width: 32px;
+        height: 32px;
+        transition: all 0.1s linear;
+        z-index: 10;
+      }
+      .enemy-marker {
+        position: absolute;
+        width: 40px;
+        height: 40px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+      .enemy-marker.hidden {
+        display: none;
+      }
+      #modal,
+      #endGameScreen {
+        transition: opacity 0.3s ease;
+      }
+      .animate-flash {
+        animation: flash 0.5s;
+      }
+      @keyframes flash {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.2;
+        }
+      }
+    </style>
+  </head>
+  <body class="bg-gray-900 flex items-center justify-center min-h-screen">
+    <div id="gameContainer" class="w-full max-w-4xl p-4">
+      <h1 class="text-3xl text-center text-yellow-400 font-press-start mb-4">
+        Eduardo's Quest
+      </h1>
+
+      <div id="mapViewContainer">
+        <p class="text-center text-lg mb-2">Use Arrow Keys or WASD to Move</p>
+        <div id="mapView">
+          <div id="room1" class="room">
+            <div id="enemy1" class="enemy-marker"></div>
+          </div>
+          <div id="room2" class="room">
+            <div id="enemy2" class="enemy-marker"></div>
+          </div>
+          <div id="room3" class="room">
+            <div id="enemy3" class="enemy-marker"></div>
+          </div>
+          <div id="room4" class="room">
+            <div id="enemy4" class="enemy-marker"></div>
+          </div>
+        </div>
+        <div
+          id="inventory"
+          class="mt-4 p-4 border-2 border-gray-600 rounded-lg bg-gray-800"
+        >
+          <h3 class="font-press-start text-yellow-400 text-lg mb-2">
+            Inventory
+          </h3>
+          <ul
+            id="inventoryList"
+            class="list-disc list-inside text-gray-300"
+          ></ul>
+        </div>
+      </div>
+
+      <div id="battleView" class="hidden">
+        <div class="mb-4 text-center">
+          <h2
+            id="enemyName"
+            class="text-2xl font-press-start text-red-500"
+          ></h2>
+          <div id="enemySprite" class="w-32 h-32 mx-auto my-2"></div>
+          <div
+            class="w-full max-w-sm mx-auto bg-gray-700 rounded-full h-6 border-2 border-gray-500"
+          >
+            <div
+              id="enemyHealth"
+              class="bg-red-500 h-full rounded-full health-bar-inner"
+            ></div>
+          </div>
+          <p id="enemyHealthText" class="text-sm"></p>
+        </div>
+
+        <div class="mb-4 text-center">
+          <h2 class="text-2xl font-press-start text-blue-400">
+            Eduardo the Dev-loper
+          </h2>
+          <div class="w-32 h-32 mx-auto my-2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              class="w-full h-full text-blue-400"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </div>
+          <div
+            class="w-full max-w-sm mx-auto bg-gray-700 rounded-full h-6 border-2 border-gray-500"
+          >
+            <div
+              id="playerHealth"
+              class="bg-green-500 h-full rounded-full health-bar-inner"
+            ></div>
+          </div>
+          <p id="playerHealthText" class="text-sm"></p>
+          <div
+            class="w-full max-w-sm mx-auto mt-2 bg-gray-700 rounded-full h-6 border-2 border-gray-500"
+          >
+            <div
+              id="playerEnergy"
+              class="bg-yellow-500 h-full rounded-full energy-bar-inner"
+            ></div>
+          </div>
+          <p id="playerEnergyText" class="text-sm">Dev Energy</p>
+        </div>
+
+        <div id="battleLogContainer" class="mb-4">
+          <div id="battleLog"></div>
+        </div>
+
+        <div id="actionButtons" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <button
+            id="btnCode"
+            class="action-button text-lg bg-red-600 text-white p-4 rounded-lg font-bold border-b-4 border-red-800"
+          >
+            Code
+          </button>
+          <button
+            id="btnDebug"
+            class="action-button text-lg bg-blue-600 text-white p-4 rounded-lg font-bold border-b-4 border-blue-800"
+          >
+            Debug
+          </button>
+          <button
+            id="btnCoffee"
+            class="action-button text-lg bg-green-600 text-white p-4 rounded-lg font-bold border-b-4 border-green-800"
+          >
+            Coffee
+          </button>
+          <button
+            id="btnCompile"
+            class="action-button text-lg bg-yellow-500 text-black p-4 rounded-lg font-bold border-b-4 border-yellow-700"
+          >
+            Compile
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="modal"
+      class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50"
+    >
+      <div
+        class="bg-gray-800 border-4 border-yellow-400 p-8 rounded-lg text-center max-w-lg"
+      >
+        <h2 id="modalTitle" class="text-3xl font-press-start mb-4"></h2>
+        <p id="modalText" class="text-lg mb-6"></p>
+        <button
+          id="modalButton"
+          class="text-lg bg-yellow-500 text-black p-4 rounded-lg font-bold border-b-4 border-yellow-700"
+        >
+          Continue
+        </button>
+      </div>
+    </div>
+
+    <div
+      id="endGameScreen"
+      class="hidden fixed inset-0 bg-black bg-opacity-90 flex flex-col items-center justify-center z-50"
+    >
+      <h2 class="text-6xl font-press-start mb-8 text-green-400">You Won!</h2>
+      <p class="text-2xl text-gray-300 mb-12">
+        Eduardo successfully deployed the project!
+      </p>
+      <button
+        id="replayButton"
+        class="text-2xl bg-yellow-500 text-black p-6 rounded-lg font-bold border-b-4 border-yellow-700 hover:bg-yellow-400"
+      >
+        Replay Game
+      </button>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const gameContainer = document.getElementById("gameContainer");
+        const mapViewContainer = document.getElementById("mapViewContainer");
+        const battleView = document.getElementById("battleView");
+        const mapView = document.getElementById("mapView");
+        const playerElement = document.createElement("div");
+        playerElement.id = "player";
+        playerElement.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-full h-full text-blue-400"><path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z" clip-rule="evenodd" /></svg>`;
+
+        const modal = document.getElementById("modal");
+        const modalTitle = document.getElementById("modalTitle");
+        const modalText = document.getElementById("modalText");
+        const modalButton = document.getElementById("modalButton");
+        const inventoryList = document.getElementById("inventoryList");
+
+        const battleLog = document.getElementById("battleLog");
+        const actionButtons = document.getElementById("actionButtons");
+
+        const endGameScreen = document.getElementById("endGameScreen");
+        const replayButton = document.getElementById("replayButton");
+
+        const btnCode = document.getElementById("btnCode");
+        const btnDebug = document.getElementById("btnDebug");
+        const btnCoffee = document.getElementById("btnCoffee");
+        const btnCompile = document.getElementById("btnCompile");
+
+        let player, currentEnemy, battleActive, playerTurn;
+
+        const ENEMIES = {
+          "first-deploy": {
+            id: "enemy1",
+            name: "First Deploy",
+            maxHp: 80,
+            attack: 8,
+            evasion: 0.1,
+            sprite: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-full h-full text-red-400"><path d="M12.378 1.602a.75.75 0 00-.756 0L3.322 6.098a.75.75 0 00-.322.65v9.504a.75.75 0 00.322.65l8.3 4.496a.75.75 0 00.756 0l8.3-4.496a.75.75 0 00.322-.65V6.748a.75.75 0 00-.322-.65L12.378 1.602zM12 15.75a3.75 3.75 0 100-7.5 3.75 3.75 0 000 7.5z" /></svg>`,
+            moves: [
+              {
+                name: "Obfuscate",
+                type: "debuff_player_accuracy",
+                chance: 0.6,
+                text: "confuses Eduardo with vague requirements, lowering accuracy!",
+              },
+              {
+                name: "Brain Damage",
+                type: "damage",
+                chance: 1.0,
+                text: "unleashes a wave of psychic damage!",
+              },
+            ],
+            reward: {
+              name: "New Keyboard",
+              description: "Improves Code damage and hit chance.",
+              apply: (p) => {
+                p.baseAttack += 5;
+                p.hitChance += 0.1;
+              },
+            },
+          },
+          "week-bug": {
+            id: "enemy2",
+            name: "One Week Bug",
+            maxHp: 200,
+            attack: 15,
+            evasion: 0.05,
+            sprite: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-full h-full text-green-400"><path fill-rule="evenodd" d="M12.963 2.286a.75.75 0 00-1.071 1.052A32.94 32.94 0 0113.19 7.49a.75.75 0 001.264-.515 31.423 31.423 0 00-1.489-4.689zM10.75 8.25a.75.75 0 00-1.5 0v6a.75.75 0 001.5 0v-6zm3.5 0a.75.75 0 00-1.5 0v6a.75.75 0 001.5 0v-6zM5.228 12.28a.75.75 0 00-1.06 1.06l1.25 1.25a.75.75 0 001.06-1.06l-1.25-1.25zm14.604-1.06a.75.75 0 00-1.06-1.06l-1.25 1.25a.75.75 0 101.06 1.06l1.25-1.25zM18 10.5a.75.75 0 01.75.75v.008a.75.75 0 01-1.5 0V11.25A.75.75 0 0118 10.5zm-3.75 0a.75.75 0 01.75.75v.008a.75.75 0 01-1.5 0V11.25a.75.75 0 01.75-.75zM6 10.5a.75.75 0 01.75.75v.008a.75.75 0 01-1.5 0V11.25A.75.75 0 016 10.5zm3.75 0a.75.75 0 01.75.75v.008a.75.75 0 01-1.5 0V11.25a.75.75 0 01.75-.75zM12 21a8.25 8.25 0 006.035-2.783.75.75 0 00-1.115-1.004A6.75 6.75 0 0112 18.75a6.75 6.75 0 01-4.92-2.037.75.75 0 00-1.115 1.004A8.25 8.25 0 0012 21z" clip-rule="evenodd" /></svg>`,
+            moves: [
+              {
+                name: "Relentless Assault",
+                type: "damage",
+                chance: 1.0,
+                text: "is persistent and strikes with great force!",
+              },
+            ],
+            reward: {
+              name: "Work Environment Improvement",
+              description: "Increases Max HP and Evasion.",
+              apply: (p) => {
+                p.maxHp += 50;
+                p.hp = p.maxHp;
+                p.evasion += 0.1;
+              },
+            },
+          },
+          "impossible-deadline": {
+            id: "enemy3",
+            name: "Impossible Deadline",
+            maxHp: 120,
+            attack: 7,
+            evasion: 0.15,
+            sprite: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-full h-full text-yellow-300"><path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 6a.75.75 0 00-1.5 0v6c0 .414.336.75.75.75h4.5a.75.75 0 000-1.5h-3.75V6z" clip-rule="evenodd" /></svg>`,
+            behavior: "attacksTwice",
+            specialCooldown: 0,
+            moves: [
+              {
+                name: "Scope Creep",
+                type: "skip_turn",
+                chance: 1.0,
+                cooldown: 4,
+                text: "buries Eduardo in new requirements, stealing his turn!",
+              },
+              {
+                name: "Crunch Time",
+                type: "damage",
+                chance: 1.0,
+                text: "applies pressure, causing a flurry of small hits!",
+              },
+            ],
+            reward: {
+              name: "Advanced Knowledge",
+              description: "Increases critical hit chance and critical damage.",
+              apply: (p) => {
+                p.critChance += 0.15;
+                p.critDamage += 0.5;
+              },
+            },
+          },
+          "complex-algorithm": {
+            id: "enemy4",
+            name: "Complex Algorithm",
+            maxHp: 300,
+            attack: 20,
+            evasion: 0.3,
+            sprite: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-full h-full text-purple-400"><path d="M11.25 4.533A9.708 9.708 0 001.5 12c0 5.385 4.365 9.75 9.75 9.75s9.75-4.365 9.75-9.75c0-4.01-2.43-7.44-5.858-8.887a.75.75 0 00-.638.03L11.25 4.533zM8.25 7.5c0 .414.336.75.75.75h6a.75.75 0 000-1.5h-6a.75.75 0 00-.75.75zM8.25 10.5a.75.75 0 01.75-.75h6a.75.75 0 010 1.5h-6a.75.75 0 01-.75-.75zM8.25 13.5a.75.75 0 00.75.75h6a.75.75 0 000-1.5h-6a.75.75 0 00-.75.75z" /></svg>`,
+            moves: [
+              {
+                name: "Legacy Code",
+                type: "damage",
+                chance: 1.0,
+                text: "is a tangled mess, striking with unpredictable power!",
+              },
+            ],
+            reward: null,
+          },
+        };
+
+        const ROOM_LAYOUT = {
+          room1: { enemy: ENEMIES["first-deploy"] },
+          room2: { enemy: ENEMIES["week-bug"] },
+          room3: { enemy: ENEMIES["impossible-deadline"] },
+          room4: { enemy: ENEMIES["complex-algorithm"] },
+        };
+
+
+        function initGame() {
+          player = {
+            hp: 100,
+            maxHp: 100,
+            devEnergy: 0,
+            maxDevEnergy: 100,
+            baseAttack: 10,
+            hitChance: 0.9,
+            evasion: 0.05,
+            critChance: 0.1,
+            critDamage: 1.5,
+            items: [],
+            debuffs: { accuracyDown: 0 },
+            defeatedEnemies: new Set(),
+            currentRoom: "room1",
+          };
+          battleActive = false;
+
+          Object.values(ENEMIES).forEach((enemy) => {
+            const enemyEl = document.getElementById(enemy.id);
+            if (enemyEl) {
+              enemyEl.innerHTML = enemy.sprite;
+              enemyEl.classList.remove("hidden");
+            }
+          });
+
+          document.getElementById("room1").appendChild(playerElement);
+          playerElement.style.top = "20px";
+          playerElement.style.left = "20px";
+
+          gameContainer.classList.remove("hidden");
+          endGameScreen.classList.add("hidden");
+
+          showMapView();
+        }
+
+        function showMapView() {
+          battleView.classList.add("hidden");
+          mapViewContainer.classList.remove("hidden");
+          battleActive = false;
+          updateInventoryUI();
+        }
+
+        function showBattleView() {
+          mapViewContainer.classList.add("hidden");
+          battleView.classList.remove("hidden");
+          battleActive = true;
+        }
+
+        function startBattle(enemyData) {
+          currentEnemy = { ...enemyData };
+          currentEnemy.hp = currentEnemy.maxHp;
+          currentEnemy.defenseDebuff = 0;
+          player.debuffs.accuracyDown = 0;
+          if (currentEnemy.name === "Impossible Deadline")
+            currentEnemy.specialCooldown = 0;
+
+          logMessage(`A wild ${currentEnemy.name} appears!`);
+          showBattleView();
+          updateUI();
+          playerTurn = true;
+          toggleActionButtons(true);
+        }
+
+        function logMessage(msg, color = "text-gray-300") {
+          const p = document.createElement("p");
+          p.textContent = `> ${msg}`;
+          p.className = color;
+          battleLog.appendChild(p);
+          battleLog.scrollTop = battleLog.scrollHeight;
+        }
+
+        function updateUI() {
+          document.getElementById("playerHealth").style.width = `${
+            (player.hp / player.maxHp) * 100
+          }%`;
+          document.getElementById(
+            "playerHealthText"
+          ).textContent = `HP: ${player.hp} / ${player.maxHp}`;
+          document.getElementById("playerEnergy").style.width = `${
+            (player.devEnergy / player.maxDevEnergy) * 100
+          }%`;
+          document.getElementById(
+            "playerEnergyText"
+          ).textContent = `Dev Energy: ${player.devEnergy} / ${player.maxDevEnergy}`;
+
+          document.getElementById("enemyName").textContent = currentEnemy.name;
+          document.getElementById("enemySprite").innerHTML =
+            currentEnemy.sprite;
+          document.getElementById("enemyHealth").style.width = `${
+            (currentEnemy.hp / currentEnemy.maxHp) * 100
+          }%`;
+          document.getElementById(
+            "enemyHealthText"
+          ).textContent = `HP: ${currentEnemy.hp} / ${currentEnemy.maxHp}`;
+          btnCompile.disabled = player.devEnergy < player.maxDevEnergy;
+        }
+
+        function updateInventoryUI() {
+          inventoryList.innerHTML = "<li>Basic Laptop</li>";
+          player.items.forEach((item) => {
+            const li = document.createElement("li");
+            li.textContent = item.name;
+            inventoryList.appendChild(li);
+          });
+        }
+
+        function playerAction(action) {
+          if (!playerTurn || !battleActive) return;
+          toggleActionButtons(false);
+
+          let hit = true,
+            damage = 0;
+
+          switch (action) {
+            case "code":
+              const accuracy =
+                player.hitChance - (player.debuffs.accuracyDown > 0 ? 0.3 : 0);
+              if (Math.random() > accuracy) {
+                logMessage("Eduardo's Code misses!", "text-yellow-400");
+                hit = false;
+              } else if (Math.random() < currentEnemy.evasion) {
+                logMessage(
+                  `${currentEnemy.name} dodged the attack!`,
+                  "text-yellow-400"
+                );
+                hit = false;
+              } else {
+                damage = player.baseAttack;
+                const defenseModifier = 1 + currentEnemy.defenseDebuff * 0.25;
+                damage = Math.round(damage * defenseModifier);
+
+                let message = `Eduardo uses Code, dealing ${damage} damage.`;
+                if (currentEnemy.defenseDebuff > 0) {
+                  message += ` The enemy's defense is weakened!`;
+                }
+
+                let isCrit = Math.random() < player.critChance;
+                if (isCrit) {
+                  damage = Math.round(damage * player.critDamage);
+                  message = `A critical hit! Eduardo uses Code for ${damage} damage!`;
+                }
+                logMessage(message, isCrit ? "text-green-400" : "text-white");
+              }
+              if (hit) dealDamageToEnemy(damage);
+              gainDevEnergy(10);
+              break;
+            case "debug":
+              currentEnemy.defenseDebuff = Math.min(
+                4,
+                currentEnemy.defenseDebuff + 1
+              );
+              logMessage(
+                `Eduardo debugs the code, lowering ${currentEnemy.name}'s defense! (Stack: ${currentEnemy.defenseDebuff})`,
+                "text-blue-400"
+              );
+              gainDevEnergy(5);
+              break;
+            case "coffee":
+              const healAmount = Math.round(player.maxHp * 0.4);
+              player.hp = Math.min(player.maxHp, player.hp + healAmount);
+              logMessage(
+                `Eduardo drinks a strong coffee, recovering ${healAmount} HP.`,
+                "text-green-400"
+              );
+              updateUI();
+              break;
+            case "compile":
+              if (player.devEnergy >= player.maxDevEnergy) {
+                damage = Math.round(
+                  player.baseAttack *
+                    3 *
+                    (1 + currentEnemy.defenseDebuff * 0.25)
+                );
+                logMessage(
+                  `Eduardo unleashes COMPILE! A guaranteed hit for ${damage} damage!`,
+                  "text-yellow-400 font-bold"
+                );
+                dealDamageToEnemy(damage);
+                player.devEnergy = 0;
+              }
+              break;
+          }
+
+          playerTurn = false;
+          if (battleActive) setTimeout(enemyTurn, 1500);
+        }
+
+        function dealDamageToEnemy(damage) {
+          currentEnemy.hp = Math.max(0, currentEnemy.hp - damage);
+          gainDevEnergy(Math.round(damage / 2));
+          updateUI();
+          document.getElementById("enemySprite").classList.add("animate-flash");
+          setTimeout(
+            () =>
+              document
+                .getElementById("enemySprite")
+                .classList.remove("animate-flash"),
+            500
+          );
+          if (currentEnemy.hp <= 0) battleWon();
+        }
+
+        function dealDamageToPlayer(damage) {
+          if (Math.random() < player.evasion) {
+            logMessage("Eduardo deftly dodges the attack!", "text-green-300");
+            return;
+          }
+          player.hp = Math.max(0, player.hp - damage);
+          gainDevEnergy(damage);
+          logMessage(`Eduardo takes ${damage} damage.`, "text-red-400");
+          updateUI();
+          document
+            .querySelector(
+              "#battleView > div:nth-child(2) > div.w-32.h-32.mx-auto.my-2"
+            )
+            .classList.add("animate-flash");
+          setTimeout(
+            () =>
+              document
+                .querySelector(
+                  "#battleView > div:nth-child(2) > div.w-32.h-32.mx-auto.my-2"
+                )
+                .classList.remove("animate-flash"),
+            500
+          );
+          if (player.hp <= 0) battleLost();
+        }
+
+        function gainDevEnergy(amount) {
+          player.devEnergy = Math.min(
+            player.maxDevEnergy,
+            player.devEnergy + amount
+          );
+          updateUI();
+        }
+
+        function enemyTurn(isSecondAttack = false) {
+          if (!battleActive) return;
+          if (!isSecondAttack) {
+            if (player.debuffs.accuracyDown > 0) player.debuffs.accuracyDown--;
+            if (
+              currentEnemy.name === "Impossible Deadline" &&
+              currentEnemy.specialCooldown > 0
+            )
+              currentEnemy.specialCooldown--;
+          }
+
+          logMessage(`--- ${currentEnemy.name}'s turn ---`, "text-gray-500");
+          const move = chooseEnemyMove();
+          logMessage(`${currentEnemy.name} ${move.text}`, "text-red-300");
+
+          switch (move.type) {
+            case "damage":
+              dealDamageToPlayer(currentEnemy.attack);
+              break;
+            case "debuff_player_accuracy":
+              player.debuffs.accuracyDown = 2;
+              break;
+            case "skip_turn":
+              playerTurn = false;
+              break;
+          }
+
+          if (currentEnemy.behavior === "attacksTwice" && !isSecondAttack) {
+            setTimeout(() => enemyTurn(true), 1500);
+            return;
+          }
+
+          if (battleActive) {
+            if (move.type === "skip_turn") setTimeout(enemyTurn, 1500);
+            else {
+              playerTurn = true;
+              toggleActionButtons(true);
+              logMessage("--- Your turn ---", "text-gray-500");
+            }
+          }
+        }
+
+        function chooseEnemyMove() {
+          if (
+            currentEnemy.name === "Impossible Deadline" &&
+            currentEnemy.specialCooldown === 0
+          ) {
+            const specialMove = currentEnemy.moves.find(
+              (m) => m.type === "skip_turn"
+            );
+            if (specialMove) {
+              currentEnemy.specialCooldown = specialMove.cooldown;
+              return specialMove;
+            }
+          }
+          return (
+            currentEnemy.moves.find((m) => m.type === "damage") ||
+            currentEnemy.moves[0]
+          );
+        }
+
+        function toggleActionButtons(enabled) {
+          document
+            .querySelectorAll("#actionButtons button")
+            .forEach((btn) => (btn.disabled = !enabled));
+          if (enabled)
+            btnCompile.disabled = player.devEnergy < player.maxDevEnergy;
+        }
+
+        function battleWon() {
+          battleActive = false;
+          logMessage(
+            `${currentEnemy.name} has been defeated!`,
+            "text-green-500"
+          );
+
+          player.defeatedEnemies.add(currentEnemy.name);
+          document.getElementById(currentEnemy.id).classList.add("hidden");
+
+          if (currentEnemy.name === "Complex Algorithm") {
+            gameContainer.classList.add("hidden");
+            endGameScreen.classList.remove("hidden");
+            return;
+          }
+
+          const reward = currentEnemy.reward;
+          if (reward) {
+            player.items.push(reward);
+            reward.apply(player);
+            player.hp = player.maxHp;
+            showModal(
+              "Battle Won!",
+              `You received: ${reward.name}. ${reward.description}`
+            );
+            modalButton.onclick = () => {
+              modal.classList.add("hidden");
+              showMapView();
+            };
+          } else {
+            showMapView();
+          }
+        }
+
+        function battleLost() {
+          battleActive = false;
+          logMessage(
+            "Eduardo has been overwhelmed... Game Over.",
+            "text-red-600 font-bold"
+          );
+          showModal(
+            "Game Over",
+            "Eduardo couldn't handle the pressure. The project has failed."
+          );
+          modalButton.onclick = () => {
+            modal.classList.add("hidden");
+            initGame();
+          };
+        }
+
+        function showModal(title, text) {
+          modalTitle.textContent = title;
+          modalText.textContent = text;
+          modal.classList.remove("hidden");
+        }
+
+        function movePlayer(dx, dy) {
+          if (battleActive) return;
+          const roomEl = document.getElementById(player.currentRoom);
+          const style = window.getComputedStyle(playerElement);
+          const top = parseInt(style.top);
+          const left = parseInt(style.left);
+          const newTop = Math.max(
+            0,
+            Math.min(roomEl.clientHeight - playerElement.clientHeight, top + dy)
+          );
+          const newLeft = Math.max(
+            0,
+            Math.min(roomEl.clientWidth - playerElement.clientWidth, left + dx)
+          );
+
+          const doorThreshold = 15;
+          if (
+            newLeft + playerElement.clientWidth >
+            roomEl.clientWidth - doorThreshold
+          )
+            changeRoom("right");
+          else if (newLeft < doorThreshold) changeRoom("left");
+          else if (
+            newTop + playerElement.clientHeight >
+            roomEl.clientHeight - doorThreshold
+          )
+            changeRoom("down");
+          else if (newTop < doorThreshold) changeRoom("up");
+          else {
+            playerElement.style.top = `${newTop}px`;
+            playerElement.style.left = `${newLeft}px`;
+          }
+          checkEnemyCollision();
+        }
+
+        function changeRoom(direction) {
+          const currentNum = parseInt(player.currentRoom.slice(-1));
+          let targetRoomNum = -1;
+
+          if (direction === "right" && currentNum === 1) targetRoomNum = 2;
+          else if (direction === "left" && currentNum === 2) targetRoomNum = 1;
+          else if (direction === "down" && currentNum === 1) targetRoomNum = 3;
+          else if (direction === "up" && currentNum === 3) targetRoomNum = 1;
+          else if (direction === "down" && currentNum === 2) targetRoomNum = 4;
+          else if (direction === "up" && currentNum === 4) targetRoomNum = 2;
+          else if (direction === "right" && currentNum === 3) targetRoomNum = 4;
+          else if (direction === "left" && currentNum === 4) targetRoomNum = 3;
+
+          if (targetRoomNum !== -1) {
+            player.currentRoom = `room${targetRoomNum}`;
+            const targetRoomEl = document.getElementById(player.currentRoom);
+            targetRoomEl.appendChild(playerElement);
+
+            if (direction === "right") {
+              playerElement.style.left = "20px";
+              playerElement.style.top = "50%";
+            } else if (direction === "left") {
+              playerElement.style.left =
+                targetRoomEl.clientWidth -
+                playerElement.clientWidth -
+                20 +
+                "px";
+              playerElement.style.top = "50%";
+            } else if (direction === "down") {
+              playerElement.style.top = "20px";
+              playerElement.style.left = "50%";
+            } else if (direction === "up") {
+              playerElement.style.top =
+                targetRoomEl.clientHeight -
+                playerElement.clientHeight -
+                20 +
+                "px";
+              playerElement.style.left = "50%";
+            }
+          }
+        }
+
+        function checkEnemyCollision() {
+          const roomData = ROOM_LAYOUT[player.currentRoom];
+          if (
+            !roomData ||
+            !roomData.enemy ||
+            player.defeatedEnemies.has(roomData.enemy.name)
+          )
+            return;
+
+          const enemyEl = document.getElementById(roomData.enemy.id);
+          const playerRect = playerElement.getBoundingClientRect();
+          const enemyRect = enemyEl.getBoundingClientRect();
+
+          if (
+            playerRect.left < enemyRect.right &&
+            playerRect.right > enemyRect.left &&
+            playerRect.top < enemyRect.bottom &&
+            playerRect.bottom > enemyRect.top
+          ) {
+            battleLog.innerHTML = "";
+            startBattle(roomData.enemy);
+          }
+        }
+
+        window.addEventListener("keydown", (e) => {
+          const speed = 10;
+          switch (e.key.toLowerCase()) {
+            case "arrowup":
+            case "w":
+              movePlayer(0, -speed);
+              break;
+            case "arrowdown":
+            case "s":
+              movePlayer(0, speed);
+              break;
+            case "arrowleft":
+            case "a":
+              movePlayer(-speed, 0);
+              break;
+            case "arrowright":
+            case "d":
+              movePlayer(speed, 0);
+              break;
+          }
+        });
+
+        btnCode.addEventListener("click", () => playerAction("code"));
+        btnDebug.addEventListener("click", () => playerAction("debug"));
+        btnCoffee.addEventListener("click", () => playerAction("coffee"));
+        btnCompile.addEventListener("click", () => playerAction("compile"));
+        replayButton.addEventListener("click", initGame);
+
+        initGame();
+      });
+    </script>
+  </body>
+</html>

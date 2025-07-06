@@ -31,4 +31,11 @@ export const personalProjects: Project[] = [
     desc: "Next.js & Tailwind CSS portfolio site showcasing my projects and skills, with smooth-scroll navigation and a responsive, modern layout.",
     url: "https://github.com/onlygreb/eduardo-greb",
   },
+  {
+    title: "Eduardo the DevLopper's Quest",
+    desc: "A aimple turn based game about a developer's journey, built with HTML and vanilla JS. Click to play!",
+    url: "https://github.com/onlygreb/eduardo-greb",
+    action: 'modal',
+    gameUrl: '/EduardoTheDevLopersQuest.html'
+  },
 ];

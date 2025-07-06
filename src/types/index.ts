@@ -11,4 +11,10 @@ export type Experience = {
   relatedProject?: { name: string; url: string };
 };
 
-export type Project = { title: string; desc: string; url: string };
+export type Project = {
+  title: string;
+  desc: string;
+  url: string;
+  action?: "modal" | "link";
+  gameUrl?: string;
+};

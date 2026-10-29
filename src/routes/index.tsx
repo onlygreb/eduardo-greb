@@ -127,7 +127,6 @@ function ToolsTicker() {
         </p>
         <Marquee
           className="py-4"
-          duration={36}
           items={AI_TOOLS.map((tool) => (
             <span key={tool} className="flex items-center gap-6 pr-6 font-mono text-sm">
               <span className="whitespace-nowrap text-foreground">{tool}</span>

@@ -252,31 +252,61 @@ export function Typewriter({
   );
 }
 
-/** Infinite horizontal ticker. Pauses on hover/focus; wraps statically under reduced motion. */
+/**
+ * Infinite horizontal ticker. Pauses on hover/focus; wraps statically under reduced motion.
+ * The track is two identical halves and slides by -50%. Each half repeats the list enough
+ * times to be wider than the viewport, so there is never a gap or jump on wide screens.
+ * `speed` is in px/s, so the pace stays the same whatever the screen width.
+ */
 export function Marquee({
   items,
   className,
-  duration = 40,
+  speed = 45,
 }: {
   items: ReactNode[];
   className?: string;
-  duration?: number;
+  speed?: number;
 }) {
-  const list = (hidden: boolean) => (
-    <ul aria-hidden={hidden || undefined} className="flex shrink-0 items-center">
-      {items.map((item, i) => (
-        <li key={i} className="flex items-center">
-          {item}
-        </li>
-      ))}
-    </ul>
-  );
+  const rootRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLUListElement>(null);
+  const [copies, setCopies] = useState(3);
+  const [duration, setDuration] = useState(60);
+
+  useEffect(() => {
+    const root = rootRef.current;
+    const list = listRef.current;
+    if (!root || !list) return;
+    const measure = () => {
+      const listWidth = list.getBoundingClientRect().width;
+      if (!listWidth) return;
+      const perHalf = Math.max(1, Math.ceil(root.clientWidth / listWidth));
+      setCopies(perHalf);
+      setDuration((listWidth * perHalf) / speed);
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(root);
+    ro.observe(list);
+    return () => ro.disconnect();
+  }, [speed]);
 
   return (
-    <div className={cn("marquee overflow-hidden", className)}>
+    <div ref={rootRef} className={cn("marquee min-w-0 flex-1 overflow-hidden", className)}>
       <div className="marquee-track" style={{ ["--marquee-duration" as string]: `${duration}s` }}>
-        {list(false)}
-        {list(true)}
+        {Array.from({ length: copies * 2 }, (_, copy) => (
+          <ul
+            key={copy}
+            ref={copy === 0 ? listRef : undefined}
+            aria-hidden={copy > 0 || undefined}
+            className="flex shrink-0 items-center"
+          >
+            {items.map((item, i) => (
+              <li key={i} className="flex items-center">
+                {item}
+              </li>
+            ))}
+          </ul>
+        ))}
       </div>
     </div>
   );

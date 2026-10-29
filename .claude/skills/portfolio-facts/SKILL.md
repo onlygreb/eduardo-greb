@@ -38,6 +38,8 @@ NOT approved (no number exists, so don't add them): "N× faster with AI", "engin
 - Tools used day to day: Claude Code, Cursor, GitHub Copilot, OpenAI / ChatGPT, Gemini, DeepSeek, Lovable.
 - Gemina: integrated a Claude-powered AI assistant chat inside the cybersecurity monitoring dashboard.
 - The portfolio itself was built with AI agents and reviewed by Eduardo.
+- Agent setup he configures in practice (confirmed Oct 2026): Claude Code skills, parallel subagents, MCP servers,
+  CLAUDE.md / Cursor rules and hooks.
 - Generic workflow claims (architect → orchestrate agents → review & ship) are his stated way of working.
   Do NOT claim RAG, evals, fine-tuning or specific agent frameworks as shipped work unless Eduardo confirms them.
 
@@ -65,15 +67,23 @@ Key facts per role (from the résumé):
 - **Evolution Ventures**: sales web portals (React/TypeScript), React Native apps, Node.js/.NET backend.
 - **Ironbelly Studios**: browser-based 3D playground designer in Unity/C# (WebGL) for Backyard Adventures
   (https://backyardadventures.com/designer); game systems in C#, C++ and Unreal; Node.js/.NET backends; Azure, CI/CD.
-- **MTI Studio**: Flutter/Dart apps, server and website upkeep, Unity multiplayer prototypes, plus C#/.NET, Java/Spring,
+- **MTI Studio**: Flutter/Dart apps plus native iOS (Swift) and Android (Kotlin, Java) development, server and website upkeep, Unity multiplayer prototypes, plus C#/.NET, Java/Spring,
   PHP/Laravel, React, Node.js, SQL.
 - **VR Monkey**: Unity VR games in C#; ported a PC VR title (Tarzan VR) to PSVR on a PS4 dev kit; optimization.
 - **Smart Consulting**: web apps (HTML/CSS/JS/TS), Microsoft Dynamics 365, C#/.NET/SQL backends and integrations.
 
+## Mobile (confirmed by Eduardo, Oct 2026; not tied to a specific employer except MTI native work)
+
+Confirmed: React Native, Flutter, native iOS (Swift) and Android (Kotlin, Java), native modules for RN/Flutter,
+App Store / Google Play release lifecycle (signing, CI/CD), Universal Links / App Links, offline-first,
+OAuth 2.0 / OIDC, push/engagement SDKs, WCAG accessibility.
+NOT confirmed (don't claim): SAML, Objective-C, Airship by name, "high-traffic" apps, events/ticketing/live media.
+
 ## Skills (résumé)
 
 Backend: C#, .NET, TypeScript, Node.js, REST, GraphQL, RabbitMQ, Kafka · Frontend: React, TypeScript, JavaScript,
-React Native · Data: PostgreSQL, SQL, MySQL, Oracle SQL, MongoDB · Cloud: AWS, Azure, GCP, Docker, CI/CD,
+WCAG · Mobile: React Native, Flutter/Dart, Swift, Kotlin/Java, native modules, store releases, deep links, offline-first,
+push SDKs · Data: PostgreSQL, SQL, MySQL, Oracle SQL, MongoDB · Cloud: AWS, Azure, GCP, Docker, CI/CD,
 GitHub Actions · Additional: Unity, Unreal Engine, C++, Flutter/Dart, Java/Spring, PHP/Laravel, Go, Python.
 
 ## Résumé

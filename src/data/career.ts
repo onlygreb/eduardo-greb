@@ -4,7 +4,7 @@
 export const SITE = {
   title: "Eduardo Greb — Tech Lead who ships production software with AI agents",
   description:
-    "Tech Lead with 8+ years across backend, web, cloud and games. I design the architecture, direct AI agents to write the code, and own what reaches production. Based in Brazil, working remotely with teams worldwide. Available for contractor / B2B roles.",
+    "Tech Lead with 8+ years across backend, web, mobile, cloud and games. I design the architecture, direct AI agents to write the code, and own what reaches production. Based in Brazil, working remotely with teams worldwide. Available for contractor / B2B roles.",
   ogImage: "https://eduardo-greb.vercel.app/og.png",
 };
 
@@ -29,7 +29,7 @@ export const CONTACT_LINE =
 export const HERO = {
   headline: "Tech Lead who ships production software with AI agents.",
   subtitle:
-    "8+ years across backend, web, cloud and games. I design the architecture, direct AI agents to write the code, and own what reaches production.",
+    "8+ years across backend, web, mobile, cloud and games. I design the architecture, direct AI agents to write the code, and own what reaches production.",
 };
 
 export const STATS = [
@@ -61,7 +61,7 @@ export const HOW_I_BUILD = {
     {
       label: "step_02",
       title: "Orchestrate",
-      body: "Coding agents (Claude Code, Cursor, GitHub Copilot) run on scoped tasks. Context files, tests first, small diffs.",
+      body: "Coding agents (Claude Code, Cursor, GitHub Copilot) run on scoped tasks, set up with project skills, parallel subagents, MCP servers and CLAUDE.md rules & hooks. Tests first, small diffs.",
     },
     {
       label: "step_03",
@@ -157,7 +157,12 @@ export const ROLES = [
     role: "Senior Game & Back-End",
     place: "Quebec, Canada",
   },
-  { period: "2021 — 2022", company: "MTI Studio", role: "Full-Stack", place: "São Paulo, Brazil" },
+  {
+    period: "2021 — 2022",
+    company: "MTI Studio",
+    role: "Full-Stack · Flutter & native iOS/Android",
+    place: "São Paulo, Brazil",
+  },
   {
     period: "2020 — 2021",
     company: "VR Monkey",
@@ -177,6 +182,10 @@ export const STACK_GROUPS = [
     title: "AI engineering",
     items: [
       "Coding agents",
+      "Agent skills",
+      "Subagents",
+      "MCP servers",
+      "CLAUDE.md · rules · hooks",
       "LLM API integration",
       "Claude Code",
       "Cursor",
@@ -189,9 +198,32 @@ export const STACK_GROUPS = [
   },
   {
     title: "Backend",
-    items: ["TypeScript / Node.js", "C# / .NET", "REST", "GraphQL", "RabbitMQ", "Kafka"],
+    items: [
+      "TypeScript / Node.js",
+      "C# / .NET",
+      "REST",
+      "GraphQL",
+      "OAuth 2.0 / OIDC",
+      "RabbitMQ",
+      "Kafka",
+    ],
   },
-  { title: "Frontend & mobile", items: ["React", "React Native", "Flutter"] },
+  {
+    title: "Mobile & frontend",
+    items: [
+      "React Native",
+      "React",
+      "Flutter",
+      "Swift (iOS)",
+      "Kotlin / Java (Android)",
+      "Native modules",
+      "App Store & Google Play releases",
+      "Universal Links / App Links",
+      "Offline-first",
+      "Push SDKs",
+      "WCAG accessibility",
+    ],
+  },
   {
     title: "Cloud & data",
     items: ["AWS", "Azure", "GCP", "Docker", "PostgreSQL", "MongoDB", "CI/CD"],

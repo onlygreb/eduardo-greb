@@ -179,14 +179,15 @@ function HowIBuild() {
                 speed={16}
                 lines={[
                   { key: "01 architect  ", text: "spec · boundaries · data model" },
+                  { key: "02 configure  ", text: "skills · subagents · mcp · hooks" },
                   {
-                    key: "02 dispatch   ",
+                    key: "03 dispatch   ",
                     text: "claude code · cursor · copilot",
                     className: "text-accent",
                   },
-                  { key: "03 verify     ", text: "tests ✓  types ✓  lint ✓" },
-                  { key: "04 review     ", text: "every diff read by a human" },
-                  { key: "05 ship       ", text: "ci/cd → production", className: "text-accent" },
+                  { key: "04 verify     ", text: "tests ✓  types ✓  lint ✓" },
+                  { key: "05 review     ", text: "every diff read by a human" },
+                  { key: "06 ship       ", text: "ci/cd → production", className: "text-accent" },
                 ]}
               />
             </div>

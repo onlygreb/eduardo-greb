@@ -1,369 +1,435 @@
+import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
+import { ArrowRight, ArrowUpRight, Check, Copy } from "lucide-react";
 import { SiteNav } from "@/components/site/site-nav";
-import { Reveal } from "@/components/site/primitives";
-import { HeroParticles } from "@/components/site/hero-particles";
-import { useReveal } from "@/hooks/use-reveal";
-import { CONTACT, SKILL_GROUPS } from "@/data/career";
+import { AgentGraph } from "@/components/site/agent-graph";
+import { ProjectVisual } from "@/components/site/project-visual";
 import { ResumeButton } from "@/components/site/resume-modal";
+import {
+  CountUp,
+  Marquee,
+  Reveal,
+  ScrollProgress,
+  SplitWords,
+  Stagger,
+  StaggerItem,
+  Typewriter,
+} from "@/components/site/motion";
+import {
+  ABOUT,
+  AI_TOOLS,
+  AVAILABILITY,
+  CONTACT,
+  EXTRAS,
+  FOOTER,
+  HERO,
+  HOW_I_BUILD,
+  PROJECTS,
+  ROLES,
+  SITE,
+  STACK_GROUPS,
+  STATS,
+} from "@/data/career";
 import { cn } from "@/lib/utils";
-
-const TITLE = "Eduardo Greb — Tech Lead & Software Engineer";
-const DESCRIPTION =
-  "Tech Lead and software engineer with more than eight years across backend, web, cloud, games and real-time systems. Based in Brazil, available for international contractor / B2B roles.";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: TITLE },
-      { name: "description", content: DESCRIPTION },
-      { property: "og:title", content: TITLE },
-      { property: "og:description", content: DESCRIPTION },
+      { title: SITE.title },
+      { name: "description", content: SITE.description },
+      { property: "og:title", content: SITE.title },
+      { property: "og:description", content: SITE.description },
       { property: "og:type", content: "website" },
+      { property: "og:image", content: SITE.ogImage },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: SITE.title },
+      { name: "twitter:description", content: SITE.description },
+      { name: "twitter:image", content: SITE.ogImage },
     ],
   }),
   component: Index,
 });
 
-const PROJECTS = [
-  {
-    n: "01",
-    label: "Gemina · 2025—Present",
-    title: "Cybersecurity monitoring platform",
-    role: "Tech Lead & Full-Stack Developer",
-    body: "I joined the project at the beginning and built its technical foundation, choosing the initial stack and architecture and working across both the backend and frontend. Today I continue developing the product while leading its technical direction and reviewing implementation decisions with the team.",
-    tech: "Node.js · TypeScript · React",
-  },
-  {
-    n: "02",
-    label: "S44 Energy · 2024—2025",
-    title: "EV charging software",
-    role: "Senior Full-Stack Developer",
-    body: "I worked on software for EV charging operations in the CitrineOS ecosystem, building React interfaces and Node.js services backed by PostgreSQL, messaging and cloud infrastructure.",
-    tech: "React · TypeScript · Node.js · PostgreSQL · AWS · RabbitMQ",
-    link: { href: "https://github.com/citrineos", label: "CitrineOS on GitHub" },
-  },
-  {
-    n: "03",
-    label: "Ironbelly Studios · 2022—2024",
-    title: "Backyard Adventures playground designer",
-    role: "Senior Game & Back-End Developer",
-    body: "I built and maintained a browser-based 3D playground designer in Unity, turning a physical product catalog into a tool customers could configure directly in the browser.",
-    tech: "Unity · C# · WebGL",
-    link: { href: "https://backyardadventures.com/designer", label: "Backyard Adventures Designer" },
-  },
-];
+const btn =
+  "inline-flex min-h-12 items-center gap-2 px-6 text-base font-medium transition-[transform,background-color,color,border-color] duration-200 hover:-translate-y-0.5 active:translate-y-0";
 
-const ROLES = [
-  {
-    company: "Gemina",
-    title: "Tech Lead & Full-Stack Developer",
-    period: "Jul 2025 — Present",
-    body: "Leading the technical development of a cybersecurity monitoring platform while remaining hands-on across the product.",
-  },
-  {
-    company: "S44 Energy",
-    title: "Senior Full-Stack Developer",
-    period: "Oct 2024 — May 2025",
-    body: "Full-stack work on EV charging software in the CitrineOS ecosystem.",
-  },
-  {
-    company: "Evolution Ventures",
-    title: "Senior Full-Stack Developer",
-    period: "Mar 2024 — Jul 2024",
-    body: "Sales web portals in React, React Native apps, and backend services in Node.js and .NET.",
-  },
-  {
-    company: "Ironbelly Studios",
-    title: "Senior Game & Back-End Developer",
-    period: "Apr 2022 — Mar 2024",
-    body: "Games, backends and interactive 3D products with C#, .NET, Unity, C++, Unreal Engine and Node.js.",
-  },
-  {
-    company: "Earlier",
-    title: "MTI Studio · VR Monkey · Smart Consulting",
-    period: "2018 — 2022",
-    body: "Mostly C#/.NET across backend, games and enterprise systems, plus TypeScript and Node.js at MTI Studio.",
-  },
-];
+function SectionLabel({ children, className }: { children: string; className?: string }) {
+  return <p className={cn("label mb-4 text-muted-foreground", className)}>{children}</p>;
+}
 
-function Timeline() {
-  const { ref, shown } = useReveal<HTMLDivElement>(0.05);
-
+function Hero() {
   return (
-    <div ref={ref} className="relative mt-12 pl-6 md:pl-8">
-      <span
-        aria-hidden
-        className={cn(
-          "timeline-line absolute left-0 top-1.5 h-[calc(100%-0.75rem)] w-px bg-border-strong",
-          shown && "timeline-line-in",
-        )}
-      />
-      <div className="space-y-10">
-        {ROLES.map((r, i) => (
-          <Reveal key={r.company} delay={Math.min(i * 60, 180)}>
-            <div className="relative md:grid md:grid-cols-12 md:gap-10">
-              <span
-                aria-hidden
-                className="absolute -left-6 top-2 size-1.5 rounded-full bg-border-strong md:-left-8"
-              />
-              <p className="font-mono text-xs text-subtle md:col-span-3">{r.period}</p>
-              <div className="mt-2 md:col-span-9 md:mt-0">
-                <h3 className="text-base font-medium text-foreground">
-                  {r.company} — <span className="text-muted-foreground">{r.title}</span>
-                </h3>
-                <p className="mt-2 max-w-2xl leading-relaxed text-muted-foreground">{r.body}</p>
-              </div>
-            </div>
-          </Reveal>
-        ))}
+    <section id="top" className="relative isolate overflow-hidden">
+      <AgentGraph className="pointer-events-none absolute inset-0 -z-10 h-full w-full opacity-35 md:opacity-100" />
+
+      <div className="container-site pb-16 pt-16 md:pb-20 md:pt-24">
+        <p className="fade-up label flex items-start gap-3 text-sm text-muted-foreground">
+          <span className="status-dot mt-[0.45em] shrink-0" aria-hidden />
+          <span>{AVAILABILITY.join(" · ")}</span>
+        </p>
+
+        <SplitWords
+          as="h1"
+          immediate
+          delay={0.1}
+          text={HERO.headline}
+          className="display-xl mt-7 max-w-[13ch] text-foreground"
+        />
+
+        <p
+          className="fade-up mt-8 max-w-[680px] text-[clamp(1.125rem,1rem+0.5vw,1.375rem)] leading-relaxed text-foreground/80"
+          style={{ animationDelay: "0.55s" }}
+        >
+          {HERO.subtitle}
+        </p>
+
+        <div className="fade-up mt-10 flex flex-wrap gap-3" style={{ animationDelay: "0.7s" }}>
+          <a href="#work" className={cn(btn, "group bg-accent text-ink")}>
+            See selected work
+            <ArrowRight
+              aria-hidden
+              className="size-4 transition-transform duration-200 group-hover:translate-x-1"
+            />
+          </a>
+          <ResumeButton
+            className={cn(
+              btn,
+              "border border-border-strong bg-background/60 text-foreground hover:border-foreground",
+            )}
+          >
+            Download résumé
+          </ResumeButton>
+        </div>
+
+        <Stagger className="mt-16 grid grid-cols-2 border-t border-border md:mt-20 md:grid-cols-4">
+          {STATS.map((s) => (
+            <StaggerItem key={s.label} className="pr-6 pt-6">
+              <p className="text-[2.5rem] font-bold leading-none tracking-tight">
+                <CountUp value={s.value} suffix={s.suffix} />
+              </p>
+              <p className="label mt-2 text-muted-foreground">{s.label}</p>
+            </StaggerItem>
+          ))}
+        </Stagger>
+      </div>
+    </section>
+  );
+}
+
+function ToolsTicker() {
+  return (
+    <div className="border-y border-border bg-surface">
+      <div className="flex items-stretch">
+        <p className="label hidden shrink-0 items-center border-r border-border px-6 text-muted-foreground sm:flex">
+          // in daily use
+        </p>
+        <Marquee
+          className="py-4"
+          duration={36}
+          items={AI_TOOLS.map((tool) => (
+            <span key={tool} className="flex items-center gap-6 pr-6 font-mono text-sm">
+              <span className="whitespace-nowrap text-foreground">{tool}</span>
+              <span aria-hidden className="inline-block size-1.5 bg-accent" />
+            </span>
+          ))}
+        />
       </div>
     </div>
   );
 }
 
-
-function Index() {
+function HowIBuild() {
   return (
-    <div id="top" className="min-h-screen bg-background">
-      <SiteNav />
-      <main>
-        {/* Hero */}
-        <section className="relative isolate overflow-hidden">
-          <HeroParticles className="pointer-events-none absolute inset-0 -z-10 h-full w-full" />
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0 -z-10"
-            style={{
-              background:
-                "radial-gradient(60% 55% at 30% 45%, var(--background) 0%, color-mix(in oklab, var(--background) 72%, transparent) 45%, transparent 78%)",
-            }}
-          />
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-40 bg-gradient-to-b from-transparent to-background"
-          />
+    <section id="ai-workflow" className="on-light scroll-mt-4 bg-paper text-ink">
+      <div className="container-site py-24 md:py-32">
+        <SectionLabel className="text-ink/70">01 — How I build</SectionLabel>
+        <SplitWords text={HOW_I_BUILD.headline} className="display-lg max-w-[820px]" />
 
-          <div className="mx-auto w-full max-w-5xl px-6 pb-24 pt-40 md:px-10 md:pb-36 md:pt-52">
-            <div className="hero-enter">
-              <h1 className="text-4xl font-semibold tracking-tight text-foreground md:text-5xl">
-                Eduardo Greb
-              </h1>
-            </div>
-            <div className="hero-enter" style={{ animationDelay: "120ms" }}>
-              <p className="mt-2 text-base text-muted-foreground">Tech Lead &amp; Software Engineer</p>
-            </div>
-
-            <div className="hero-enter" style={{ animationDelay: "240ms" }}>
-              <p className="mt-10 max-w-3xl text-xl leading-relaxed text-foreground md:text-2xl md:leading-relaxed">
-                I'm a Tech Lead and software engineer with more than eight years of experience across
-                backend, web, cloud, games and real-time systems. Today I spend most of my time
-                designing software, making technical decisions and working with the team to build it.
+        <Stagger className="mt-14 grid gap-px border border-ink bg-ink md:grid-cols-3">
+          {HOW_I_BUILD.steps.map((step) => (
+            <StaggerItem
+              key={step.label}
+              className="group bg-paper p-8 transition-colors duration-300 hover:bg-ink hover:text-paper"
+            >
+              <p className="label text-ink/70 transition-colors duration-300 group-hover:text-accent">
+                {step.label}
               </p>
-            </div>
-
-            <div className="hero-enter" style={{ animationDelay: "360ms" }}>
-              <p className="mt-8 font-mono text-xs text-subtle">
-                Brazil · UTC−3 · Available for international contractor / B2B roles
+              <h3 className="mt-4 text-2xl font-bold">{step.title}</h3>
+              <p className="mt-3 leading-relaxed text-ink/80 transition-colors duration-300 group-hover:text-paper/80">
+                {step.body}
               </p>
+            </StaggerItem>
+          ))}
+        </Stagger>
 
-              <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-4">
-                <a
-                  href="#work"
-                  className="border-b border-primary/70 pb-1 text-sm text-foreground transition-colors hover:border-primary hover:text-primary"
-                >
-                  View my work
-                </a>
-                <ResumeButton className="border-b border-transparent pb-1 text-sm text-muted-foreground transition-colors hover:border-border-strong hover:text-foreground">
-                  Résumé
-                </ResumeButton>
-                <a
-                  href={CONTACT.linkedin}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-sm text-subtle transition-colors hover:text-foreground"
-                >
-                  LinkedIn
-                </a>
-                <a
-                  href={CONTACT.github}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-sm text-subtle transition-colors hover:text-foreground"
-                >
-                  GitHub
-                </a>
+        <div className="mt-10 grid gap-10 md:grid-cols-2 md:gap-12">
+          <Reveal>
+            <div className="border border-ink bg-ink font-mono text-paper">
+              <div className="flex items-center gap-2 border-b border-paper/15 px-4 py-3">
+                <span className="size-2.5 rounded-full bg-paper/25" />
+                <span className="size-2.5 rounded-full bg-paper/25" />
+                <span className="size-2.5 rounded-full bg-paper/25" />
+                <span className="ml-2 text-xs text-paper/70">workflow.log</span>
               </div>
+              <Typewriter
+                className="space-y-1.5 overflow-x-auto p-5 text-[13px] leading-relaxed sm:p-6"
+                lineClassName="whitespace-pre"
+                speed={16}
+                lines={[
+                  { key: "01 architect  ", text: "spec · boundaries · data model" },
+                  {
+                    key: "02 dispatch   ",
+                    text: "claude code · cursor · copilot",
+                    className: "text-accent",
+                  },
+                  { key: "03 verify     ", text: "tests ✓  types ✓  lint ✓" },
+                  { key: "04 review     ", text: "every diff read by a human" },
+                  { key: "05 ship       ", text: "ci/cd → production", className: "text-accent" },
+                ]}
+              />
             </div>
-          </div>
-        </section>
+          </Reveal>
 
-        {/* Selected work */}
-        <section id="work" className="scroll-mt-20 border-t border-border">
-          <div className="mx-auto w-full max-w-5xl px-6 py-24 md:px-10 md:py-32">
-            <Reveal>
-              <h2 className="text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
-                Selected work
-              </h2>
-            </Reveal>
-
-            <div className="mt-12 md:mt-16">
-              {PROJECTS.map((p) => (
-                <Reveal key={p.n}>
-                  <article className="group border-t border-border py-10 transition-colors duration-200 hover:border-border-strong md:grid md:grid-cols-12 md:gap-10 md:py-14">
-                    <div className="md:col-span-4">
-                      <p className="font-mono text-xs text-subtle">
-                        {p.n} — {p.label}
-                      </p>
-                    </div>
-                    <div className="mt-4 md:col-span-8 md:mt-0">
-                      <h3 className="text-xl font-medium text-foreground transition-transform duration-300 ease-out group-hover:translate-x-1 md:text-2xl">
-                        {p.title}
-                      </h3>
-                      <p className="mt-1 text-sm text-subtle">{p.role}</p>
-                      <p className="mt-5 max-w-2xl leading-relaxed text-muted-foreground">
-                        {p.body}
-                      </p>
-                      <p className="mt-6 font-mono text-xs text-subtle opacity-80 transition-opacity duration-300 group-hover:opacity-100">
-                        {p.tech}
-                      </p>
-                      {p.link ? (
-                        <a
-                          href={p.link.href}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="group/link mt-6 inline-flex items-center gap-2 border-b border-border-strong pb-1 text-sm text-muted-foreground transition-colors hover:border-primary hover:text-foreground"
-                        >
-                          {p.link.label}
-                          <span
-                            aria-hidden
-                            className="transition-transform duration-200 group-hover/link:translate-x-1"
-                          >
-                            →
-                          </span>
-                        </a>
-                      ) : null}
-                    </div>
-                  </article>
-                </Reveal>
+          <Reveal delay={0.1} className="flex flex-col justify-center">
+            <p className="label text-ink/70">In production</p>
+            <p className="mt-3 text-xl leading-relaxed md:text-2xl">{HOW_I_BUILD.inProduction}</p>
+            <ul className="mt-8 flex flex-wrap gap-2" aria-label="AI tools I use">
+              {AI_TOOLS.map((tool) => (
+                <li
+                  key={tool}
+                  className="border border-ink/30 px-3 py-1.5 font-mono text-xs transition-colors duration-200 hover:border-ink hover:bg-ink hover:text-accent"
+                >
+                  {tool}
+                </li>
               ))}
-            </div>
-          </div>
-        </section>
+            </ul>
+          </Reveal>
+        </div>
+      </div>
+    </section>
+  );
+}
 
-        {/* Experience */}
-        <section id="experience" className="scroll-mt-20 border-t border-border">
-          <div className="mx-auto w-full max-w-5xl px-6 py-24 md:px-10 md:py-32">
-            <Reveal>
-              <h2 className="text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
-                Experience
-              </h2>
+function SelectedWork() {
+  return (
+    <section id="work" className="scroll-mt-4">
+      <div className="container-site py-24 md:py-32">
+        <SectionLabel>02 — Selected work</SectionLabel>
+        <SplitWords text="Products, not tickets." className="display-lg" />
+
+        <div className="mt-14 border-b border-border">
+          {PROJECTS.map((p) => (
+            <article
+              key={p.id}
+              className="group grid gap-10 border-t border-border py-12 md:grid-cols-[1.15fr_1fr] md:gap-12 md:py-14"
+            >
+              <Reveal y={32}>
+                <ProjectVisual kind={p.visual} />
+              </Reveal>
+
+              <Stagger className="min-w-0">
+                <StaggerItem>
+                  <p className="label text-muted-foreground">
+                    {p.company} · {p.period} · {p.role}
+                  </p>
+                </StaggerItem>
+                <StaggerItem>
+                  <h3 className="mt-3 text-[clamp(1.625rem,1.3rem+1.2vw,2rem)] font-bold leading-tight transition-transform duration-300 group-hover:translate-x-1">
+                    {p.title}
+                  </h3>
+                </StaggerItem>
+                <StaggerItem>
+                  <p className="mt-4 text-[17px] leading-relaxed text-foreground/80">{p.body}</p>
+                </StaggerItem>
+                <StaggerItem>
+                  <ul className="mt-5 space-y-2.5">
+                    {p.results.map((r) => (
+                      <li key={r} className="flex gap-3 leading-relaxed">
+                        <span
+                          aria-hidden
+                          className="mt-[0.6em] inline-block size-1.5 shrink-0 bg-accent"
+                        />
+                        {r}
+                      </li>
+                    ))}
+                  </ul>
+                </StaggerItem>
+                <StaggerItem>
+                  <p className="label mt-6 text-accent">{p.stack.join(" · ")}</p>
+                </StaggerItem>
+                {p.link ? (
+                  <StaggerItem>
+                    <a
+                      href={p.link.href}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="group/link mt-4 inline-flex min-h-11 items-center gap-2 border-b border-border-strong text-[15px] transition-colors hover:border-accent hover:text-accent"
+                    >
+                      {p.link.label}
+                      <ArrowUpRight
+                        aria-hidden
+                        className="size-4 transition-transform duration-200 group-hover/link:-translate-y-0.5 group-hover/link:translate-x-0.5"
+                      />
+                    </a>
+                  </StaggerItem>
+                ) : null}
+              </Stagger>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ExperienceAndStack() {
+  return (
+    <section id="experience" className="scroll-mt-4">
+      <div className="container-site pb-24 md:pb-32">
+        <h2 className="label mb-8 text-sm text-muted-foreground">03 — Experience &amp; stack</h2>
+
+        <div className="grid gap-14 lg:grid-cols-[1.4fr_1fr] lg:gap-16">
+          <div className="min-w-0">
+            <Reveal className="mb-10 max-w-[620px] space-y-4 text-[17px] leading-relaxed text-foreground/80">
+              {ABOUT.map((para) => (
+                <p key={para}>{para}</p>
+              ))}
             </Reveal>
 
-            <Timeline />
-
-            <Reveal>
-              <div className="mt-16 grid gap-8 border-t border-border pt-10 sm:grid-cols-2">
-                {SKILL_GROUPS.map((g) => (
-                  <div key={g.title}>
-                    <p className="font-mono text-xs text-subtle">{g.title}</p>
-                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                      {g.items.map((item, i) => (
-                        <span key={item}>
-                          {i > 0 ? " · " : null}
-                          <span className="transition-colors duration-200 hover:text-foreground">
-                            {item}
-                          </span>
-                        </span>
-                      ))}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </Reveal>
-          </div>
-        </section>
-
-        {/* About */}
-        <section id="about" className="scroll-mt-20 border-t border-border">
-          <div className="mx-auto w-full max-w-5xl px-6 py-24 md:px-10 md:py-32">
-            <Reveal>
-              <h2 className="text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
-                About
-              </h2>
-              <div className="mt-8 max-w-2xl space-y-6 leading-relaxed text-muted-foreground">
-                <p>
-                  I started working in tech at 16, and since then I've moved through very different
-                  kinds of projects — from business applications to games, VR and real-time software.
-                </p>
-                <p>
-                  I've worked extensively with both C#/.NET and TypeScript/Node.js, but I've never
-                  been particularly attached to one stack. Moving between different kinds of projects
-                  is probably what made me comfortable learning whatever the job actually needs.
-                </p>
-                <p>
-                  I'm a Tech Lead today, but I still enjoy being involved in the technical work. I
-                  don't want to stop building things just because my title has “Lead” in it.
-                </p>
-              </div>
-            </Reveal>
-          </div>
-        </section>
-
-        {/* Contact */}
-        <section id="contact" className="scroll-mt-20 border-t border-border">
-          <div className="mx-auto w-full max-w-5xl px-6 py-24 md:px-10 md:py-32">
-            <Reveal>
-              <h2 className="text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
-                Let's talk.
-              </h2>
-              <p className="mt-4 max-w-2xl leading-relaxed text-muted-foreground">
-                I'm open to remote Senior and Lead engineering roles, working from Brazil as an
-                international contractor.
-              </p>
-              <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
-                <a
-                  href={`mailto:${CONTACT.email}`}
-                  className="border-b border-primary/70 pb-1 text-sm text-foreground transition-colors hover:border-primary hover:text-primary"
+            <Stagger as="ol" className="border-b border-border">
+              {ROLES.map((r) => (
+                <StaggerItem
+                  as="li"
+                  key={r.company}
+                  className="group grid grid-cols-[7.5rem_1fr] gap-x-6 gap-y-1 border-t border-border py-4 transition-colors duration-200 hover:bg-surface sm:grid-cols-[9rem_1fr_auto]"
                 >
-                  Email me
-                </a>
-                <a
-                  href={CONTACT.linkedin}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-                >
-                  LinkedIn
-                </a>
-                <a
-                  href={CONTACT.github}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-sm text-subtle transition-colors hover:text-foreground"
-                >
-                  GitHub
-                </a>
-                <ResumeButton className="text-sm text-muted-foreground transition-colors hover:text-foreground">
-                  Résumé
-                </ResumeButton>
-              </div>
-            </Reveal>
+                  <span className="label pt-0.5 text-muted-foreground transition-colors group-hover:text-accent">
+                    {r.period}
+                  </span>
+                  <span className="text-[17px] transition-transform duration-300 group-hover:translate-x-1">
+                    {r.company} <span className="text-muted-foreground">— {r.role}</span>
+                  </span>
+                  <span className="label col-start-2 text-muted-foreground sm:col-start-auto sm:pr-3 sm:pt-0.5">
+                    {r.place}
+                  </span>
+                </StaggerItem>
+              ))}
+            </Stagger>
           </div>
-        </section>
 
-        <footer className="border-t border-border">
-          <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center justify-between gap-3 px-6 py-10 md:px-10">
-            <p className="font-mono text-xs text-subtle">Eduardo Greb · Brazil · Remote</p>
+          <Stagger className="flex min-w-0 flex-col gap-7">
+            {STACK_GROUPS.map((g) => (
+              <StaggerItem key={g.title}>
+                <h3 className="label mb-2.5 text-accent">{g.title}</h3>
+                <ul className="flex flex-wrap gap-1.5">
+                  {g.items.map((item) => (
+                    <li
+                      key={item}
+                      className="border border-border px-2.5 py-1 text-[15px] transition-colors duration-200 hover:border-accent hover:text-accent"
+                    >
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </StaggerItem>
+            ))}
+            <StaggerItem className="space-y-3 border-t border-border pt-6">
+              {EXTRAS.map((e) => (
+                <div key={e.label}>
+                  <p className="label text-muted-foreground">{e.label}</p>
+                  <p className="mt-1 text-[15px]">{e.value}</p>
+                </div>
+              ))}
+            </StaggerItem>
+          </Stagger>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function CopyEmailButton() {
+  const [copied, setCopied] = useState(false);
+  return (
+    <button
+      type="button"
+      onClick={async () => {
+        try {
+          await navigator.clipboard.writeText(CONTACT.email);
+          setCopied(true);
+          window.setTimeout(() => setCopied(false), 1800);
+        } catch {
+          window.location.href = `mailto:${CONTACT.email}`;
+        }
+      }}
+      className={cn(
+        btn,
+        "w-12 justify-center border-2 border-ink px-0 text-ink hover:bg-ink hover:text-accent",
+      )}
+      aria-label={copied ? "Email copied" : "Copy email address"}
+    >
+      {copied ? <Check aria-hidden className="size-4" /> : <Copy aria-hidden className="size-4" />}
+      <span className="sr-only" aria-live="polite">
+        {copied ? "Copied" : ""}
+      </span>
+    </button>
+  );
+}
+
+function Contact() {
+  const outlined = cn(btn, "border-2 border-ink text-ink hover:bg-ink hover:text-accent");
+  return (
+    <section id="contact" className="on-accent scroll-mt-4 bg-accent text-ink">
+      <div className="container-site py-24 md:py-32">
+        <SplitWords
+          text="Need a senior who ships fast — and right?"
+          className="display-md max-w-[900px]"
+        />
+        <Reveal delay={0.2}>
+          <p className="mt-6 max-w-[620px] text-[19px] leading-relaxed">
+            Open to remote Senior / Lead roles and contract work, from Brazil.
+          </p>
+          <div className="mt-10 flex flex-wrap gap-3">
             <a
               href={`mailto:${CONTACT.email}`}
-              className="font-mono text-xs text-subtle transition-colors hover:text-foreground"
+              className={cn(btn, "bg-ink text-paper hover:text-accent")}
             >
               {CONTACT.email}
             </a>
+            <CopyEmailButton />
+            <a href={CONTACT.linkedin} target="_blank" rel="noreferrer" className={outlined}>
+              LinkedIn
+            </a>
+            <a href={CONTACT.github} target="_blank" rel="noreferrer" className={outlined}>
+              GitHub
+            </a>
+            <ResumeButton className={outlined}>Résumé</ResumeButton>
           </div>
-        </footer>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+function Index() {
+  return (
+    <div className="min-h-screen bg-background">
+      <ScrollProgress />
+      <SiteNav />
+      <main>
+        <Hero />
+        <ToolsTicker />
+        <HowIBuild />
+        <SelectedWork />
+        <ExperienceAndStack />
+        <Contact />
       </main>
+      <footer className="container-site label flex flex-wrap justify-between gap-3 py-7 text-muted-foreground">
+        <span>{FOOTER.left}</span>
+        <span>{FOOTER.right}</span>
+      </footer>
     </div>
   );
 }

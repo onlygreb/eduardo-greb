@@ -1,101 +1,43 @@
-import { useEffect, useState } from "react";
-import { Link, useRouterState } from "@tanstack/react-router";
-import { cn } from "@/lib/utils";
-import { ResumeButton } from "@/components/site/resume-modal";
-
 const LINKS = [
-  { hash: "work", label: "Work" },
-  { hash: "experience", label: "Experience" },
-  { hash: "about", label: "About" },
-  { hash: "contact", label: "Contact" },
+  { href: "#work", label: "/work" },
+  { href: "#ai-workflow", label: "/ai-workflow" },
+  { href: "#contact", label: "/contact" },
 ];
 
 export function SiteNav() {
-  const [scrolled, setScrolled] = useState(false);
-  const [activeHash, setActiveHash] = useState<string | null>(null);
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const onHome = pathname === "/";
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  useEffect(() => {
-    if (!onHome || typeof IntersectionObserver === "undefined") return;
-    const sections = LINKS.map((l) => document.getElementById(l.hash)).filter(
-      (el): el is HTMLElement => !!el,
-    );
-    if (!sections.length) return;
-
-    const io = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
-        if (visible) setActiveHash(visible.target.id);
-      },
-      { rootMargin: "-20% 0px -65% 0px", threshold: 0 },
-    );
-    sections.forEach((s) => io.observe(s));
-    return () => io.disconnect();
-  }, [onHome]);
-
   return (
-    <header
-      className={cn(
-        "fixed inset-x-0 top-0 z-50 transition-colors duration-300",
-        scrolled
-          ? "border-b border-border bg-background/90 backdrop-blur"
-          : "border-b border-transparent",
-      )}
-    >
-      <nav className="mx-auto flex h-16 w-full max-w-5xl items-center justify-between px-6 md:px-10">
-        <Link to="/" className="text-sm font-medium tracking-tight text-foreground">
-          Eduardo Greb
-        </Link>
+    <header className="relative z-10 border-b border-border">
+      <nav
+        aria-label="Primary"
+        className="container-site flex flex-wrap items-center justify-between gap-x-6 gap-y-2 py-4"
+      >
+        <a
+          href="#top"
+          className="group inline-flex min-h-11 items-center gap-2.5 font-mono text-[15px] text-foreground"
+        >
+          <span className="inline-block size-3 bg-accent transition-transform duration-300 group-hover:rotate-45" />
+          eduardo.greb
+        </a>
 
-        <div className="hidden items-center gap-8 sm:flex">
-          {LINKS.map((l) => {
-            const active = onHome && activeHash === l.hash;
-            return (
-              <a
-                key={l.hash}
-                href={onHome ? `#${l.hash}` : `/#${l.hash}`}
-                aria-current={active ? "true" : undefined}
-                className={cn(
-                  "relative text-sm transition-colors duration-200",
-                  active ? "text-foreground" : "text-subtle hover:text-foreground",
-                )}
-              >
-                {l.label}
-                <span
-                  className={cn(
-                    "absolute -bottom-1.5 left-1/2 h-px w-3 -translate-x-1/2 bg-primary transition-opacity duration-200",
-                    active ? "opacity-100" : "opacity-0",
-                  )}
-                />
-              </a>
-            );
-          })}
-          <ResumeButton className="text-sm text-muted-foreground transition-colors hover:text-foreground">
-            Résumé
-          </ResumeButton>
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-1 font-mono text-sm">
+          {LINKS.map((l) => (
+            <a
+              key={l.href}
+              href={l.href}
+              className="group relative inline-flex min-h-11 items-center text-muted-foreground transition-colors hover:text-foreground"
+            >
+              {l.label}
+              <span className="absolute inset-x-0 bottom-2 h-px origin-left scale-x-0 bg-accent transition-transform duration-300 group-hover:scale-x-100" />
+            </a>
+          ))}
         </div>
 
-        <div className="flex items-center gap-5 sm:hidden">
-          <ResumeButton className="text-sm text-muted-foreground transition-colors hover:text-foreground">
-            Résumé
-          </ResumeButton>
-          <a
-            href={onHome ? "#contact" : "/#contact"}
-            className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-          >
-            Contact
-          </a>
-        </div>
+        <a
+          href="#contact"
+          className="inline-flex min-h-11 items-center bg-accent px-5 text-[15px] font-medium text-ink transition-transform duration-200 hover:-translate-y-0.5 active:translate-y-0"
+        >
+          Hire me
+        </a>
       </nav>
     </header>
   );

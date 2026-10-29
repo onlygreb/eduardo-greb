@@ -20,6 +20,7 @@ import {
   AI_TOOLS,
   AVAILABILITY,
   CONTACT,
+  CONTACT_LINE,
   EXTRAS,
   FOOTER,
   HERO,
@@ -387,9 +388,7 @@ function Contact() {
           className="display-md max-w-[900px]"
         />
         <Reveal delay={0.2}>
-          <p className="mt-6 max-w-[620px] text-[19px] leading-relaxed">
-            Open to remote Senior / Lead roles and contract work, from Brazil.
-          </p>
+          <p className="mt-6 max-w-[620px] text-[19px] leading-relaxed">{CONTACT_LINE}</p>
           <div className="mt-10 flex flex-wrap gap-3">
             <a
               href={`mailto:${CONTACT.email}`}

@@ -14,7 +14,9 @@ All site copy lives in `src/data/career.ts`. Edit facts there, not in components
 ## Identity
 
 - Eduardo Greb (résumé: Eduardo Greb dos Santos). Tech Lead & Full-Stack / Software Engineer.
-- São Paulo, Brazil, UTC−3. Remote. Available for international contractor / B2B roles.
+- Based in São Paulo, Brazil (UTC−3), but works remotely for teams worldwide (US, Canada, Brazil so far).
+  Never phrase it as Brazil-only ("from Brazil" alone reads that way). Contractor / B2B.
+- Live site: https://eduardo-greb.vercel.app/ (the résumé links to it).
 - Available now: the Gemina contract ends in November 2026.
 - Started working in tech at 16. 8+ years of professional software experience (since Aug 2018).
 - Languages: Portuguese (native), English (fluent), Spanish (intermediate), German (basic).
@@ -73,6 +75,11 @@ Key facts per role (from the résumé):
 Backend: C#, .NET, TypeScript, Node.js, REST, GraphQL, RabbitMQ, Kafka · Frontend: React, TypeScript, JavaScript,
 React Native · Data: PostgreSQL, SQL, MySQL, Oracle SQL, MongoDB · Cloud: AWS, Azure, GCP, Docker, CI/CD,
 GitHub Actions · Additional: Unity, Unreal Engine, C++, Flutter/Dart, Java/Spring, PHP/Laravel, Go, Python.
+
+## Résumé
+
+`src/assets/Eduardo_Greb_Resume_2026.docx` is the source. The PDF is exported from it with Word. Keep both in sync with this
+file: edit the DOCX XML (unzip → edit `word/document.xml` → rezip), then export the PDF via Word COM.
 
 ## Out of scope
 

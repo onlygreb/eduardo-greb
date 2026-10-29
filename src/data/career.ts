@@ -4,8 +4,8 @@
 export const SITE = {
   title: "Eduardo Greb — Tech Lead who ships production software with AI agents",
   description:
-    "Tech Lead with 8+ years across backend, web, cloud and games. I design the architecture, direct AI agents to write the code, and own what reaches production. Remote from Brazil, available for contractor / B2B roles.",
-  ogImage: "/og.png",
+    "Tech Lead with 8+ years across backend, web, cloud and games. I design the architecture, direct AI agents to write the code, and own what reaches production. Based in Brazil, working remotely with teams worldwide. Available for contractor / B2B roles.",
+  ogImage: "https://eduardo-greb.vercel.app/og.png",
 };
 
 export const CONTACT = {
@@ -16,7 +16,15 @@ export const CONTACT = {
   githubLabel: "github.com/onlygreb",
 };
 
-export const AVAILABILITY = ["Available now", "Remote", "Brazil (UTC−3)", "Contractor / B2B"];
+export const AVAILABILITY = [
+  "Available now",
+  "Remote, worldwide",
+  "Based in Brazil (UTC−3)",
+  "Contractor / B2B",
+];
+
+export const CONTACT_LINE =
+  "Open to remote Senior / Lead roles and contract work, anywhere in the world. Based in Brazil (UTC−3), with a track record on teams in the US, Canada and Brazil.";
 
 export const HERO = {
   headline: "Tech Lead who ships production software with AI agents.",
@@ -205,6 +213,6 @@ export const EXTRAS = [
 ];
 
 export const FOOTER = {
-  left: "Eduardo Greb · Brazil · Remote",
+  left: "Eduardo Greb · Based in Brazil · Working worldwide",
   right: "Built with AI agents, reviewed by a human.",
 };
